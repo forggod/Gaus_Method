@@ -1,48 +1,52 @@
-class Reader:
-    file_text = []
-
-    def __init__(self, src):
-        self.file = open(src, 'r')
-
-    def src_read(self):
-        for line in self.file:
-            self.file_text.append(line)
-        return self.file_text
+def show_matrix(matrix):
+    for i in matrix:
+        print(i)
+    print()
 
 
-# file1 = Reader('Matrix.txt')
-# print(*file1.src_read())
+def divide_line(line, j):
+    div = line[j]
+    for i in range(len(line)):
+        line[i] /= div
 
-def zerodation(matrix, row, k, n):  # Привидение к треугольному виду
-    max = row[0]
-    for i in row:
-        if max < i:
-            max = i
-    # for el in row:
 
+def substract_line(first, second, j):
+    div = second[j] / first[j]
+    for i in range(len(second)):
+        second[i] -= first[i] * div
 
 
 matrix = [
-    [2.6, -4.5, -2.0, 19.07],
-    [3, 3, 4.3, 3.21],
-    [-6, 3.5, 3, -18.25]
+    [1, 2, 4, -5],
+    [-2, 1, -3, 10],
+    [3, -2, -5, 3]
+    #   x( -1, 2, -2 )
 ]
-zmatrix = []
-
-for i in matrix:
-    print(i)
-
+domatrix = []
 n = len(matrix)
-for i in range(n):
-    if matrix[i][i] == 0:
-        print('Элемент на главной диагонали равен нулю')
-        n = 0
-
-if n:
-    k = 0
-    for m in matrix:
-        for i in range(k + 1):
-            if m[i] != 0 and i != k:
-                zmatrix.append(zerodation(matrix, m, k, len(m)))
-            print(i)
-        k += 1
+show_matrix(matrix)
+for j in range(n):
+    #   Сортировка по  главному элементу столбца
+    for k in range(j, n):
+        for i in range(j + 1, n):
+            if abs(matrix[i - 1][j]) < abs(matrix[i][j]):
+                mat = matrix[i - 1]
+                matrix[i - 1] = matrix[i]
+                matrix[i] = mat
+    #   Делим строку на главный элемент
+    divide_line(matrix[j], j)
+    #   Приводим к нулю значения ниже главного элемента
+    for k in range(j + 1, n):
+        substract_line(matrix[j], matrix[k], j)
+show_matrix(matrix)
+#   Получили нашу матрицу
+#   Находим вектор x
+x = [0] * n
+for i in range(n - 1, -1, -1):
+    x[i] = matrix[i][n]
+    for j in range(n - 1, i, -1):
+        x[i] -= matrix[i][j]*x[j]
+#   Выводим вектор x без учета погрешности
+print(*x)
+# Теперь ищем эпсилон
+e = [0]*n
