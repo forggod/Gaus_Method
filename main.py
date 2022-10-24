@@ -1,7 +1,4 @@
-def show_matrix(matrix):
-    for i in matrix:
-        print(i)
-    print()
+import random
 
 
 def divide_line(line, j):
@@ -10,21 +7,59 @@ def divide_line(line, j):
         line[i] /= div
 
 
-def substract_line(first, second, j):
-    div = second[j] / first[j]
+def substract_line(first, second, num):
+    div = second[num] / first[num]
     for i in range(len(second)):
         second[i] -= first[i] * div
 
 
-matrix = [
-    [1, 2, 4, -5],
-    [-2, 1, -3, 10],
-    [3, -2, -5, 3]
-    #   x( -1, 2, -2 )
-]
-domatrix = []
+r = 10
+
+# region Генератор матрицы
+random.seed()
+n = int(input('Введите размер матрицы: '))
+matrix = []
+x = [random.randint(1, 20) for i in range(n)]
+for i in range(n):
+    matrix.append([round(float(random.randint(1, 50) / x[j]), r) for j in range(n)])
+
+print(x)
+#   Запись матрицы в файл
+f = open('matrix.txt', 'w')
+for i in range(n):
+    line = ''
+    for j in range(n):
+        line += str(matrix[i][j]) + ' '
+    f.write(line + '\n')
+f.write('\n(')
+for i in range(n):
+    si = ', '
+    if i == n - 1:
+        si = ')'
+    f.write(str(x[i]) + si)
+f.close()
+
+# matrix = [
+#     [1, 2, 4],
+#     [-2, 1, -3],
+#     [3, -2, -5]
+# ]
+# x = [-1, 2, -2]
+# endregion
+
+#   Ищем приесоединённый вектор
 n = len(matrix)
-show_matrix(matrix)
+b = []
+for i in range(n):
+    a = 0
+    for j in range(n):
+        a += matrix[i][j] * x[j]
+    b.append(a)
+
+for i in range(n):
+    matrix[i].append(b[i])
+
+# region Поиск вектора x
 for j in range(n):
     #   Сортировка по  главному элементу столбца
     for k in range(j, n):
@@ -38,15 +73,20 @@ for j in range(n):
     #   Приводим к нулю значения ниже главного элемента
     for k in range(j + 1, n):
         substract_line(matrix[j], matrix[k], j)
-show_matrix(matrix)
 #   Получили нашу матрицу
 #   Находим вектор x
-x = [0] * n
+xe = [0] * n
 for i in range(n - 1, -1, -1):
-    x[i] = matrix[i][n]
+    xe[i] = matrix[i][n]
     for j in range(n - 1, i, -1):
-        x[i] -= matrix[i][j]*x[j]
-#   Выводим вектор x без учета погрешности
-print(*x)
-# Теперь ищем эпсилон
-e = [0]*n
+        xe[i] -= matrix[i][j] * xe[j]
+# endregion
+
+print(xe)
+print('Погрешность:', end='\n(')
+for i in range(n):
+    si = ', '
+    if i == n - 1:
+        si = ''
+    print(abs(round(x[i], r) - round(xe[i], 15)), end=si)
+print(')\n')
