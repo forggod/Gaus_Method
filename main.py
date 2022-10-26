@@ -23,7 +23,7 @@ x = [random.randint(1, 20) for i in range(n)]
 for i in range(n):
     matrix.append([round(float(random.randint(1, 50) / x[j]), r) for j in range(n)])
 
-print(x)
+# print(x)
 #   Запись матрицы в файл
 f = open('matrix.txt', 'w')
 for i in range(n):
@@ -61,7 +61,7 @@ for i in range(n):
 
 # region Поиск вектора x
 for j in range(n):
-    #   Сортировка по  главному элементу столбца
+    #   Выбор главного элемента столбца
     for k in range(j, n):
         for i in range(j + 1, n):
             if abs(matrix[i - 1][j]) < abs(matrix[i][j]):
@@ -82,11 +82,10 @@ for i in range(n - 1, -1, -1):
         xe[i] -= matrix[i][j] * xe[j]
 # endregion
 
-print(xe)
-print('Погрешность:', end='\n(')
-for i in range(n):
-    si = ', '
-    if i == n - 1:
-        si = ''
-    print(abs(round(x[i], r) - round(xe[i], 15)), end=si)
-print(')\n')
+# print(xe)
+print('Погрешность:')
+max = abs(x[0] - xe[0])
+for i in range(len(xe)):
+    if max < abs(x[i]-xe[i]):
+        max = abs(x[i]-xe[i])
+print(max)
