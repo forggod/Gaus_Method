@@ -62,12 +62,11 @@ for i in range(n):
 # region Поиск вектора x
 for j in range(n):
     #   Выбор главного элемента столбца
-    for k in range(j, n):
-        for i in range(j + 1, n):
-            if abs(matrix[i - 1][j]) < abs(matrix[i][j]):
-                mat = matrix[i - 1]
-                matrix[i - 1] = matrix[i]
-                matrix[i] = mat
+    for i in range(j + 1, n):
+        if abs(matrix[i - 1][j]) < abs(matrix[i][j]):
+            mat = matrix[i - 1]
+            matrix[i - 1] = matrix[i]
+            matrix[i] = mat
     #   Делим строку на главный элемент
     divide_line(matrix[j], j)
     #   Приводим к нулю значения ниже главного элемента
